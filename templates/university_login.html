@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Authorization Form</title>
+</head>
+
+<body>
+    <h1>Authorization Form</h1>
+    <form id="authorizationForm">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required><br><br>
+
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required><br><br>
+
+        <button type="submit">Authorize</button>
+    </form>
+
+    <div id="response"></div>
+
+    <script>
+        // Function to handle form submission
+        document.getElementById("authorizationForm").addEventListener("submit", function (event) {
+            event.preventDefault();
+
+            const formData = new FormData(this);
+
+            fetch("/validate/university", {
+                method: "POST",
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status) {
+                        window.location.href = data.route
+                    }
+                    else {
+                        console.error(data.message)
+                    }
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                    document.getElementById("response").innerHTML = "An error occurred while validating your credentials.";
+                });
+        });
+    </script>
+</body>
+
+</html>

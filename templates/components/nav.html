@@ -1,0 +1,7 @@
+<nav>
+    {% if args.user %}
+        <a href="{{ url_for('authentication.logout' ) }}">Logout</a>
+    {% else %}
+        <a href="{{ url_for('authentication.student' ) }}">Login</a>
+    {% endif %}
+</nav>

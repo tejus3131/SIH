@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% block title %}Welcome{% endblock title %}
+{% block content %}
+{% if args.type == 'university' %}
+<h1>UNIVERSITY LOGIN</h1>
+<br>
+<form id="universityForm"> <!-- Unique ID for the university form -->
+    <label for="universityUsername">Username:</label>
+    <input type="text" id="universityUsername" name="username" required>
+    <br>
+    <br>
+    <label for="universityPassword">Password:</label>
+    <input type="password" id="universityPassword" name="password" required>
+    <br>
+    <br>
+    <button type="submit">Authorize</button>
+</form>
+<br>
+<p>
+    <a href="{{ url_for('authentication.student') }}">Student</a>
+    <br>
+    <a href="{{ url_for('authentication.administrator') }}">admin</a>
+</p>
+{% elif args.type == 'administrator' %}
+<h1>ADMINISTRATOR LOGIN</h1>
+<br>
+<form id="adminForm"> <!-- Unique ID for the admin form -->
+    <label for="adminUsername">Username:</label>
+    <input type="text" id="adminUsername" name="username" required>
+    <br>
+    <br>
+    <label for="adminPassword">Password:</label>
+    <input type="password" id="adminPassword" name="password" required>
+    <br>
+    <br>
+    <button type="submit">Authorize</button>
+</form>
+<br>
+<p>
+    <a href="{{ url_for('authentication.student') }}">Student</a>
+    <br>
+    <a href="{{ url_for('authentication.university') }}">University</a>
+</p>
+{% else %}
+<h1>STUDENT LOGIN</h1>
+<br>
+<form>
+    <label for="university">Select a University:</label>
+    <select name="university" id="university">
+        {% for university in args.universities %}
+        <option value="{{ university.id }}">{{ university.name }}</option>
+        {% endfor %}
+    </select>
+    <button type="submit">Submit</button>
+</form>
+<br>
+<p>
+    <a href="{{ url_for('authentication.university') }}">university</a>
+    <br>
+    <a href="{{ url_for('authentication.administrator') }}">admin</a>
+</p>
+{% endif %}
+{% endblock %}
+<script>
+    // JavaScript function for form validation and submission
+    function validateAndSubmitForm(api, formId) {
+        const form = document.getElementById(formId);
+
+        form.addEventListener("submit", async function (event) {
+            event.preventDefault();
+            const formData = new FormData(form);
+            try {
+                const response = await fetch(api, {
+                    method: "POST",
+                    body: formData,
+                });
+                if (!response.ok) {
+                    throw new Error("Network response was not ok");
+                }
+                const data = await response.json();
+
+                // Update a specific element on the page with the response
+                const responseElement = document.getElementById("response");
+                responseElement.textContent = data.message; // Assuming the server returns a 'message' property
+
+            } catch (error) {
+                console.error("Error:", error);
+                const responseElement = document.getElementById("response");
+                responseElement.textContent = "An error occurred while authorizing.";
+            }
+        });
+    }
+
+    // Usage: Call the function with your desired URL and form ID
+    validateAndSubmitForm("your-api-endpoint-url", "universityForm");
+    validateAndSubmitForm("your-api-endpoint-url", "adminForm");
+</script>
+

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Authorization Form</title>
+</head>
+<body>
+    <h1>Authorization Form</h1>
+    <form id="authorizationForm">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required><br><br>
+        
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required><br><br>
+        
+        <button type="submit">Authorize</button>
+    </form>
+
+    <div id="response"></div>
+
+    <script>
+        // Function to handle form submission
+        document.getElementById("authorizationForm").addEventListener("submit", function (event) {
+            event.preventDefault(); // Prevent the default form submission
+
+            // Get form data
+            const formData = new FormData(this);
+
+            // Make a POST request to your API endpoint
+            fetch("/api/administrator", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.json()) // Parse response as JSON
+            .then(data => {
+                window.location.href = "/administrator/"
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                document.getElementById("response").innerHTML = "An error occurred while authorizing.";
+            });
+        });
+    </script>
+</body>
+</html>
